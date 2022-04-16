@@ -1,0 +1,28 @@
+Variable representing which screen you're on: 1 means Top screen, 2 means Game screen, 3 means Score screen
+
+Top screen:
+
+Variable to store cursor position: 1 means Play, 2 means See Times
+
+Game screen:
+
+2D array representing the area for the game
+
+Variable representing the player's X position
+
+Variable representing the player's Y position
+
+Variable representing the player's orientation: 1 means up, 2 means right, 3 means down, 4 means left
+
+Enum representing the availability of a tile: 1 means player, 2 means interactable object, 3 means occupied, 4 means
+open
+
+Boolean variable representing whether or not the player has picked up the key
+
+Variable keeping track of how much time has passed so far
+
+Three character variables, each representing one of the characters in the player's name if they get a top 10 score
+
+Score screen:
+
+Array for the JSON objects representing top scores
