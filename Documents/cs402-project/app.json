@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "cs402-project",
+    "slug": "cs402-project",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
