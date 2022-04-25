@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   controlBtn: {
-    backgroundColor: "yellow",
+    backgroundColor: "blue",
     width: 100,
     height: 100,
   },
