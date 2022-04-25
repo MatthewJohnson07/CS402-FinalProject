@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useRef, useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Button} from 'react-native';
 import { GameEngine } from "react-native-game-engine";
 import Constants from "./systems/Constants";
 import Head from "./components/Head";
@@ -13,13 +13,17 @@ export default function App() {
   const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
   const engine = useRef(null);
   const [isGameRunning, setIsGameRunning] = useState(true);
+  const [viewmode, setVMode] = useState(false);
 
   const randomPositions = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
   
-  return (
-    <View style={styles.canvas}>
+var screenChoice = ""
+ 
+ if(viewmode)
+ {
+  screenChoice =   <View style={styles.canvas}>
     <GameEngine
         ref={engine}
         style={{
@@ -95,8 +99,40 @@ export default function App() {
         </View>
       </View>
     </View>
-  );
+ }
+ else {
+  
+screenChoice = 
+<View style={styles.startButton}>
+<Button onPress={() => switchMode()}
+title="Start Game"
+/>
+</View>
+
+  
+ }
+
+return(screenChoice);
+
+
+
+
+
+ function switchMode()
+  {
+     if (viewmode) // in grid mode
+     {
+         setVMode(false);
+     }
+     else // in Preview mode
+     {
+          setVMode(true);
+     }
+  }
 }
+
+
+
 
 const styles = StyleSheet.create({
   canvas: {
@@ -118,4 +154,11 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
+  startButton: {
+    width: '100%',
+      height: '30%',
+      justifyContent: 'center',
+      alignItems: 'center'
+  },
+   
 });
