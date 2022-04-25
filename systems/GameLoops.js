@@ -3,6 +3,7 @@ import Alert from "react-native";
 export default function (entities, { events, dispatch }) {
   const head = entities.head;
   const key = entities.key;
+  const door = entities.door;
   
   head.nextMove -= 1;
   if (events.length) {
@@ -40,10 +41,15 @@ if (head.nextMove === 0) {
     head.position[0] + head.xPos < 0 ||
         head.position[0] + head.xPos >= Constants.GRID_SIZE ||
         head.position[1] + head.yPos < 0 ||
-        head.position[1] + head.yPos >= Constants.GRID_SIZE
+        head.position[1] + head.yPos >= Constants.GRID_SIZE ||
+        (head.position[0] + head.xPos == door.position[0] &&
+          head.position[1] + head.yPos == door.position[1] &&
+          !head.keyGrabbed)
   ) {
-      head.position[0] -= head.xPos;
-      head.position[1] -= head.yPos;
+      //head.position[0] -= head.xPos;
+      //head.position[1] -= head.yPos;
+      head.xPos = 0;
+      head.yPos = 0;
   } else
 
   head.position[0] += head.xPos;
@@ -61,8 +67,14 @@ if (head.nextMove === 0) {
         }
 
   if (
-    head.position[0] == 24 && head.position[1] == 0 && head.keyGrabbed
+    head.position[0] == door.position[0] && head.position[1] == door.position[1] && head.keyGrabbed
   ) {
+    door.position = [
+      -100,-100
+    ];
+    head.position = [
+      -100,-100
+    ];
     dispatch("game-over");
   }
 }
