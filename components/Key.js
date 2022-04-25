@@ -6,7 +6,7 @@ export default function Key({ position, size }) {
       style={{
         width: size,
         height: size,
-        backgroundColor: "ywllow",
+        backgroundColor: "yellow",
         position: "absolute",
         left: position[0] * size,
         top: position[1] * size,
