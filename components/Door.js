@@ -6,7 +6,7 @@ export default function Door({ position, size }) {
       style={{
         width: size,
         height: size,
-        backgroundColor: "blue",
+        backgroundColor: "brown",
         position: "absolute",
         left: position[0] * size,
         top: position[1] * size,
