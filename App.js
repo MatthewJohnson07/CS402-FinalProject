@@ -309,6 +309,7 @@ const styles = StyleSheet.create({
 	backgroundColor: "green",
 	width: 90,
 	height: 90,
+	borderRadius: 50,
   },
   startButton: {
     width: '100%',
