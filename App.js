@@ -1,27 +1,97 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useRef, useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Button, SafeAreaView} from 'react-native';
+import React, {useRef, useState, useEffect} from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Button, SafeAreaView, VirtualizedList} from 'react-native';
 import { GameEngine } from "react-native-game-engine";
 import Constants from "./systems/Constants";
 import Head from "./components/Head";
 import Key from "./components/Key";
 import Door from "./components/Door";
 import GameLoops from "./systems/GameLoops";
+import {Item} from './components/ListItem.js'
+import {loadList,saveList} from './components/RemoteAccess.js'
  
 const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
 
+// declare our initial list of Items to show in the Virtual List.
+var startlist = [
+  {key: "RRR"}
+];
+
 export default function App() {
+
+
+var emptydata = [];
+    //necessary functions for the <VirtualList> Component
+  const getItemCount = (data) => list.length; // return the total number of items in the actual list.  Ignore data
+  const getItem = (data, index) => list[index]; // get an individual item from the actual data list. Ignore data
+
+  // here we can use fetch to load an initial data set from a remote url
+  // var urladdress = "http://mec402.boisestate.edu/cgi-bin/cs402/onejson"
+  //var urladdress = "https://cs.boisestate.edu/~scutchin/cs402/codesnips/onejson"
+  //const response = loadList(urladdress,startlist)
+  const [list, setlist] = useState(startlist);
+  const [secondlist, setsecondlist] = useState(startlist);
+  const [autosave,setsave] = useState(false);
+
+  var screenChoice = ""
   
   const engine = useRef(null);
   const [isGameRunning, setIsGameRunning] = useState(true);
   const [viewmode, setVMode] = useState(false);
+  const [viewLeaderboard, setLBoard] = useState(false);
 
   const randomPositions = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
   
-var screenChoice = ""
  
+
+    
+  // the following functions modify the data in the list.
+  // read data from remote URL
+  function loadButton() {
+    var urladdress =
+      'https://cs.boisestate.edu/~scutchin/cs402/codesnips/loadjson.php?user=lkarlsson';
+    const response = loadList(urladdress, list, setlist);
+  }
+
+  // this function is called to draw a single item inside of the virtual list
+  const renderItem = ({ item, index }) => {
+    return (
+      <Item
+        item={item}
+        backgroundColor={"black"}
+        textColor={"white"}
+      />
+    );
+  };
+
+   var avirtlist = (
+    <VirtualizedList
+      styles={styles.list}
+      data={emptydata}
+      initialNumToRender={4}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => index}
+      getItemCount={getItemCount}
+      getItem={getItem}
+    />
+  );
+ 
+if(viewLeaderboard){
+    screenChoice = 
+    <SafeAreaView>
+    
+             <View style={styles.startButton}>
+            <Button onPress={() => goToLeaderboard()}
+              title="Go Back"
+            />
+            {avirtlist}
+    </View>
+    </SafeAreaView>
+   
+  }
+else
  if(viewmode)
  {
   screenChoice =   <SafeAreaView style={styles.canvas}>
@@ -119,6 +189,8 @@ screenChoice =
             <Button onPress={() => switchMode()}
               title="Start Game"
             />
+            <Button  onPress={() => goToLeaderboard()} 
+            title="Leaderboard" />
           </View>
         </View>
         <View style={styles.controlContainer}>
@@ -149,8 +221,7 @@ screenChoice =
           </View>
         </View>
         </SafeAreaView>
-
-  
+ 
  }
 
 return(screenChoice);
@@ -170,7 +241,20 @@ return(screenChoice);
           setVMode(true);
      }
   }
+
+function goToLeaderboard()
+{
+    if(viewLeaderboard)
+    {
+      setLBoard(false);
+    } else
+    {
+      setLBoard(true);
+    }
 }
+}
+
+
 
 
 
