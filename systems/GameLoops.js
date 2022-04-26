@@ -49,6 +49,9 @@ export default function (entities, { events, dispatch }) {
             head.orientation = 2;
           }
           return;
+		case "a":
+		
+		  return;
       }
     });
   }
