@@ -9,6 +9,7 @@ import Door from "./components/Door";
 import GameLoops from "./systems/GameLoops";
 import {Item} from './components/ListItem.js'
 import {loadList,saveList} from './components/RemoteAccess.js'
+import { Stopwatch } from 'react-native-stopwatch-timer';
  
 const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
 
@@ -32,7 +33,8 @@ var emptydata = [];
   const [list, setlist] = useState(startlist);
   const [secondlist, setsecondlist] = useState(startlist);
   const [autosave,setsave] = useState(false);
-
+  const [isStopwatchStart, setIsStopwatchStart] = useState(false);
+  const [resetStopwatch, setResetStopwatch] = useState(false);
   var screenChoice = ""
   
   const engine = useRef(null);
@@ -94,6 +96,7 @@ if(viewLeaderboard){
 else
  if(viewmode)
  {
+  
   screenChoice =   <SafeAreaView style={styles.canvas}>
     <GameEngine
         ref={engine}
@@ -138,6 +141,7 @@ else
             case "game-over":
               alert("Game over!");
               setIsGameRunning(false);
+              setVMode(false);
               return;
           }
         }}
@@ -177,7 +181,17 @@ else
               <View style={styles.aBtn} />
             </TouchableOpacity>
       </View>
-	  
+	  <Stopwatch
+            laps
+            msecs
+            start={isStopwatchStart}
+            //To start
+            reset={resetStopwatch}
+            //To reset
+            getTime={(time) => {
+              
+            }}
+          />
 	  
     </SafeAreaView>
  }
@@ -254,10 +268,14 @@ return(screenChoice);
      if (viewmode) // in grid mode
      {
          setVMode(false);
+         setIsStopwatchStart(false);
+         setResetStopwatch(true);
      }
      else // in Preview mode
      {
           setVMode(true);
+          setIsStopwatchStart(true);
+          setIsGameRunning(true);
      }
   }
 
