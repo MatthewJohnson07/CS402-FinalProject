@@ -169,6 +169,16 @@ else
           </TouchableOpacity>
         </View>
       </View>
+	  
+	  <View style={styles.alterContainer}>
+			<TouchableOpacity
+				
+            >
+              <View style={styles.aBtn} />
+            </TouchableOpacity>
+      </View>
+	  
+	  
     </SafeAreaView>
  }
  else {
@@ -183,7 +193,7 @@ screenChoice =
             BY ROSS RIPPEE
           </Text>
           <Text style={styles.friendshipIsMagic}>
-            and friends
+            and Matthew, Lukas and Javi
           </Text>
           <View style={styles.startButton}>
             <Button onPress={() => switchMode()}
@@ -220,7 +230,16 @@ screenChoice =
             </TouchableOpacity>
           </View>
         </View>
-        </SafeAreaView>
+		
+		<View style={styles.alterContainer}>
+			<TouchableOpacity
+				onPress={() => engine.current.dispatch("a")}
+            >
+              <View style={styles.aBtn} />
+            </TouchableOpacity>
+		</View>
+		
+</SafeAreaView>
  
  }
 
@@ -267,8 +286,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   controlContainer: {
+    marginTop: 20,
+	marginLeft: -170,
+    flex: 0.8,
+  },
+  alterContainer: {
     marginTop: 10,
-    flex: 1,
+	marginLeft: 290,
+    flex: 6.6,
   },
   controllerRow: {
     flexDirection: "row",
@@ -277,8 +302,13 @@ const styles = StyleSheet.create({
   },
   controlBtn: {
     backgroundColor: "blue",
-    width: 100,
-    height: 100,
+    width: 90,
+    height: 90,
+  },
+  aBtn: {
+	backgroundColor: "green",
+	width: 90,
+	height: 90,
   },
   startButton: {
     width: '100%',
