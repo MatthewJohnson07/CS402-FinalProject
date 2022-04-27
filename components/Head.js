@@ -1,9 +1,9 @@
 import React from "react";
 import { Image } from "react-native";
-const lookingDown = require('../assets/playerLookingDown.png');
-const lookingLeft = require('../assets/playerLookingLeft.png');
-const lookingUp = require('../assets/playerLookingUp.png');
-const lookingRight = require('../assets/playerLookingRight.png');
+const lookingDown = require('../assets/forward.png');
+const lookingLeft = require('../assets/left.png');
+const lookingUp = require('../assets/backward.png');
+const lookingRight = require('../assets/right.png');
 export default function Head({ position, size, orientation }) {
   // Looking down
   if (orientation == 1) {
