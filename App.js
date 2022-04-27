@@ -226,7 +226,7 @@ export default function App() {
               </View>
               <View style={styles.hint}>
                 <Text style={styles.hintText}>
-                  Press the green button to start the game
+                  Press the purple button to start the game
                 </Text>
               </View>
             </View>
@@ -293,7 +293,7 @@ export default function App() {
               </View>
               <View style={styles.hint}>
                 <Text style={styles.hintText}>
-                  Press the green button to view the top scores
+                  Press the purple button to view the top scores
                 </Text>
               </View>
             </View>
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     height: 90,
   },
   aBtn: {
-    backgroundColor: "green",
+    backgroundColor: "darkmagenta",
     width: 90,
     height: 90,
     borderRadius: 50,
