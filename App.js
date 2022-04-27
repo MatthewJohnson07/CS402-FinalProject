@@ -134,6 +134,7 @@ export default function App() {
                 Constants.GRID_SIZE - 1, 0
               ],
               size: Constants.CELL_SIZE,
+              locked: 1,
               renderer: <Door />,
             }
           }}
