@@ -105,7 +105,7 @@ export default function App() {
             width: BoardSize,
             height: BoardSize,
             flex: null,
-            backgroundColor: "white",
+            backgroundColor: "green",
           }}
           entities={{
             head: {
@@ -124,6 +124,8 @@ export default function App() {
               ],
 
               size: Constants.CELL_SIZE,
+              keyTaken: 0,
+              orientation: 1,
               renderer: <Key />,
             },
 
