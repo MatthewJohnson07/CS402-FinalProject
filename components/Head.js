@@ -12,7 +12,6 @@ export default function Head({ position, size, orientation }) {
         style={{
           width: size,
           height: size,
-          backgroundColor: "white",
           position: "absolute",
           left: position[0] * size,
           top: position[1] * size,
@@ -29,7 +28,6 @@ export default function Head({ position, size, orientation }) {
         style={{
           width: size,
           height: size,
-          backgroundColor: "white",
           position: "absolute",
           left: position[0] * size,
           top: position[1] * size,
@@ -46,7 +44,6 @@ export default function Head({ position, size, orientation }) {
         style={{
           width: size,
           height: size,
-          backgroundColor: "white",
           position: "absolute",
           left: position[0] * size,
           top: position[1] * size,
@@ -63,7 +60,6 @@ export default function Head({ position, size, orientation }) {
         style={{
           width: size,
           height: size,
-          backgroundColor: "white",
           position: "absolute",
           left: position[0] * size,
           top: position[1] * size,
