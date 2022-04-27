@@ -176,7 +176,7 @@ export default function App() {
 
         <View style={styles.alterContainer}>
           <TouchableOpacity
-
+			 onPress={() => engine.current.dispatch("a")}
           >
             <View style={styles.aBtn} />
           </TouchableOpacity>
