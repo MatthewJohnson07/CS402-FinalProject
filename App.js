@@ -10,6 +10,7 @@ import GameLoops from "./systems/GameLoops";
 import { Item } from './components/ListItem.js'
 import { loadList, saveList } from './components/RemoteAccess.js'
 import { Stopwatch } from 'react-native-stopwatch-timer';
+import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
 
 const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
 
@@ -119,7 +120,7 @@ export default function App() {
             key: {
               position: [
                 randomPositions(0, Constants.GRID_SIZE - 1),
-                randomPositions(0, Constants.GRID_SIZE - 1),
+                randomPositions(1, Constants.GRID_SIZE - 1),
               ],
 
               size: Constants.CELL_SIZE,
@@ -176,7 +177,7 @@ export default function App() {
 
         <View style={styles.alterContainer}>
           <TouchableOpacity
-			 onPress={() => engine.current.dispatch("a")}
+            onPress={() => engine.current.dispatch("a")}
           >
             <View style={styles.aBtn} />
           </TouchableOpacity>
@@ -218,6 +219,11 @@ export default function App() {
               <View style={styles.leaderboardButtonView}>
                 <Text style={styles.nonselectedText}>
                   LEADERBOARD
+                </Text>
+              </View>
+              <View style={styles.hint}>
+                <Text style={styles.hintText}>
+                  Press the green button to start the game
                 </Text>
               </View>
             </View>
@@ -280,6 +286,11 @@ export default function App() {
               <View style={styles.leaderboardButtonView}>
                 <Text style={styles.selectedText}>
                   LEADERBOARD
+                </Text>
+              </View>
+              <View style={styles.hint}>
+                <Text style={styles.hintText}>
+                  Press the green button to view the top scores
                 </Text>
               </View>
             </View>
@@ -435,7 +446,7 @@ const styles = StyleSheet.create({
   },
   startButtonView: {
     position: 'absolute',
-    top: (BoardSize * 3) / 5,
+    top: (BoardSize * 2) / 5,
   },
   selectedText: {
     color: 'black',
@@ -445,10 +456,21 @@ const styles = StyleSheet.create({
   },
   leaderboardButtonView: {
     position: 'absolute',
-    top: (BoardSize * 4) / 5,
+    top: (BoardSize * 3) / 5,
   },
   nonselectedText: {
     color: 'white',
     textAlign: 'center',
+  },
+  hint: {
+    width: '100%',
+    position: 'absolute',
+    top: (BoardSize * 4) / 5,
+    backgroundColor: 'blue',
+  },
+  hintText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: '10px',
   },
 });
