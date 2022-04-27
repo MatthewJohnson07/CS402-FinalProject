@@ -4,6 +4,7 @@ export default function (entities, { events, dispatch }) {
   const head = entities.head;
   const key = entities.key;
   const door = entities.door;
+  const dialoguePrompt = entities.dialoguePrompt;
 
   head.nextMove -= 1;
   if (events.length) {
@@ -50,24 +51,20 @@ export default function (entities, { events, dispatch }) {
           }
           return;
         case "a":
-          if (head.position[0] == key.position[0] && head.position[1] + 1 == key.position[1]) {
-            key.keyTaken = 1
-            head.keyGrabbed = true;
-          }
-
-          if (head.position[0] == key.position[0] && head.position[1] - 1 == key.position[1]) {
-            key.keyTaken = 1
-            head.keyGrabbed = true;
-          }
-
           if (head.position[0] - 1 == key.position[0] && head.position[1] == key.position[1]) {
             key.keyTaken = 1
+            key.orientation = 1
             head.keyGrabbed = true;
+            dialoguePrompt.position[0] = -1;
+            dialoguePrompt.position[1] = -1;
           }
 
           if (head.position[0] + 1 == key.position[0] && head.position[1] == key.position[1]) {
             key.keyTaken = 1
+            key.orientation = 2
             head.keyGrabbed = true;
+            dialoguePrompt.position[0] = -1;
+            dialoguePrompt.position[1] = -1;
           }
           if (head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1] + 1 && head.orientation == 3 && head.keyGrabbed) {
             door.locked = 0;
@@ -94,7 +91,8 @@ export default function (entities, { events, dispatch }) {
         head.position[1] + head.yPos == door.position[1]) ||
       (head.position[0] + head.xPos == key.position[0] &&
         head.position[1] + head.yPos == key.position[1] &&
-        !head.keyGrabbed)
+        !head.keyGrabbed) || 
+        (head.position[0] + head.xPos == key.position[0] && head.position[1] + head.yPos == key.position[1])
     ) {
       //head.position[0] -= head.xPos;
       //head.position[1] -= head.yPos;
@@ -105,13 +103,15 @@ export default function (entities, { events, dispatch }) {
     head.position[0] += head.xPos;
     head.position[1] += head.yPos;
 
-    if (
-      head.position[0] == key.position[0] &&
-      head.position[1] == key.position[1]
-    ) {
-
-      key.keyTaken = 1
-      head.keyGrabbed = true;
+    dialoguePrompt.position[0] = -1;
+    dialoguePrompt.position[1] = -1;
+    if (head.position[1] == key.position[1]) {
+      if (head.position[0] == key.position[0] - 1 || head.position[0] == key.position[0] + 1) {
+        if (!head.keyGrabbed) {
+          dialoguePrompt.position[0] = key.position[0];
+          dialoguePrompt.position[1] = key.position[1] - 1;
+        }
+      }
     }
 
     if (
