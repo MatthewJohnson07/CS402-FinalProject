@@ -51,30 +51,22 @@ export default function (entities, { events, dispatch }) {
           return;
         case "a":
           if (head.position[0] == key.position[0] && head.position[1] + 1 == key.position[1]) {
-            key.position = [
-              -100, -100
-            ];
+            key.keyTaken = 1
             head.keyGrabbed = true;
           }
 
           if (head.position[0] == key.position[0] && head.position[1] - 1 == key.position[1]) {
-            key.position = [
-              -100, -100
-            ];
+            key.keyTaken = 1
             head.keyGrabbed = true;
           }
 
           if (head.position[0] - 1 == key.position[0] && head.position[1] == key.position[1]) {
-            key.position = [
-              -100, -100
-            ];
+            key.keyTaken = 1
             head.keyGrabbed = true;
           }
 
           if (head.position[0] + 1 == key.position[0] && head.position[1] == key.position[1]) {
-            key.position = [
-              -100, -100
-            ];
+            key.keyTaken = 1
             head.keyGrabbed = true;
           }
           return;
@@ -110,9 +102,7 @@ export default function (entities, { events, dispatch }) {
       head.position[1] == key.position[1]
     ) {
 
-      key.position = [
-        -100, -100
-      ];
+      key.keyTaken = 1
       head.keyGrabbed = true;
     }
 
