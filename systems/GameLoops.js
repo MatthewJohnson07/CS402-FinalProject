@@ -50,7 +50,33 @@ export default function (entities, { events, dispatch }) {
           }
           return;
 		case "a":
-		
+		  if (head.position[0] == key.position[0] && head.position[1] + 1 == key.position[1]) {
+			  key.position = [
+				-100, -100
+			  ];
+			  head.keyGrabbed = true;
+		  }
+		  
+		  if (head.position[0] == key.position[0] && head.position[1] - 1 == key.position[1]) {
+			  key.position = [
+				-100, -100
+			  ];
+			  head.keyGrabbed = true;
+		  }
+		  
+		  if (head.position[0] - 1 == key.position[0] && head.position[1] == key.position[1]) {
+			  key.position = [
+				-100, -100
+			  ];
+			  head.keyGrabbed = true;
+		  }
+		  
+		  if (head.position[0] + 1 == key.position[0] && head.position[1] == key.position[1]) {
+			  key.position = [
+				-100, -100
+			  ];
+			  head.keyGrabbed = true;
+		  }
 		  return;
       }
     });
@@ -66,6 +92,8 @@ export default function (entities, { events, dispatch }) {
       head.position[1] + head.yPos >= Constants.GRID_SIZE ||
       (head.position[0] + head.xPos == door.position[0] &&
         head.position[1] + head.yPos == door.position[1] &&
+        !head.keyGrabbed) || (head.position[0] + head.xPos == key.position[0] &&
+        head.position[1] + head.yPos == key.position[1] &&
         !head.keyGrabbed)
     ) {
       //head.position[0] -= head.xPos;
@@ -75,7 +103,7 @@ export default function (entities, { events, dispatch }) {
     } else
 
       head.position[0] += head.xPos;
-    head.position[1] += head.yPos;
+      head.position[1] += head.yPos;
 
     if (
       head.position[0] == key.position[0] &&
