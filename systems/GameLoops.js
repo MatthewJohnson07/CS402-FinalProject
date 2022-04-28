@@ -1,10 +1,17 @@
 import Constants from "./Constants";
 import Alert from "react-native";
+import Sound from 'react-native-sound';
 export default function (entities, { events, dispatch }) {
   const head = entities.head;
   const key = entities.key;
   const door = entities.door;
   const dialoguePrompt = entities.dialoguePrompt;
+  
+  sound = new Sound('squeeky_door.mp3');
+
+  playSound = () => {
+      this.sound.play()
+  }
 
   head.nextMove -= 1;
   if (events.length) {

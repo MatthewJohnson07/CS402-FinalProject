@@ -11,6 +11,7 @@ import { Item } from './components/ListItem.js'
 import { loadList, saveList } from './components/RemoteAccess.js'
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
+import Sound from 'react-native-sound';
 
 const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
 
