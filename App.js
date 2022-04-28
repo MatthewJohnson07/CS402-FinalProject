@@ -11,7 +11,7 @@ import DialoguePrompt from './components/DialoguePrompt';
 import { Item } from './components/ListItem.js'
 import { loadList, saveList } from './components/RemoteAccess.js'
 import { Stopwatch } from 'react-native-stopwatch-timer';
-import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
+import { Audio } from 'expo-av';  // For music
 
 const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
 
@@ -21,7 +21,6 @@ var startlist = [
 ];
 
 export default function App() {
-
 
   var emptydata = [];
   //necessary functions for the <VirtualList> Component
@@ -49,8 +48,15 @@ export default function App() {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
-
-
+  // The following code will play Dearly Beloved
+  const [sound, setSound] = useState();
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('./music/KH1DearlyBeloved.mp3')
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
 
   // the following functions modify the data in the list.
   // read data from remote URL
@@ -242,7 +248,9 @@ export default function App() {
             </View>
             <View style={styles.controlContainer}>
               <View style={styles.controllerRow}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                onPress={() => playSound()}
+                >
                   <View style={styles.controlBtn} />
                 </TouchableOpacity>
               </View>
