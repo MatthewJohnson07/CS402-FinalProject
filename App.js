@@ -10,6 +10,8 @@ import GameLoops from "./systems/GameLoops";
 import {Item} from './components/ListItem.js'
 import {loadList,saveList} from './components/RemoteAccess.js'
 import {Audio} from 'expo';
+import PokemonLavenderTown from "./music/PokemonLavenderTown.mp3";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
 
@@ -19,21 +21,6 @@ var startlist = [
 ];
 
 export default function App() {
-
-    async componentWillMount=> {
-        this.backgroundMusic = new Audio.Sound();
-        try {
-            await this.backgroundMusic.loadAsync(
-                require("../../music/PokemonLavenderTown.mp3")
-            );
-            await this.backgroundMusic.setIsLoopingAsync(true);
-            await this.backgroundMusic.playAsync();
-            // Music should be playing
-        } catch (error) {
-            // Error occurred
-            console.log("music error")
-        }
-    }
 
 
     var emptydata = [];
@@ -60,7 +47,39 @@ export default function App() {
         return Math.floor(Math.random() * (max - min + 1) + min);
     };
 
-
+    async componentWillMount=> {
+        this.backgroundMusic = new Audio.Sound();
+        try {
+            await this.backgroundMusic.loadAsync(
+                require("/music/PokemonLavenderTown.mp3")
+            );
+            await this.backgroundMusic.setIsLoopingAsync(true);
+            await this.backgroundMusic.playAsync();
+            Audio.Sound.setCategory("Playback");
+            // Music should be playing
+        } catch (error) {
+            // Error occurred
+            console.log("music error")
+        }
+    }
+    const [playing, setPlaying] = useState();
+    const playPause = () => {
+        if (this.backgroundMusic.isPlaying()) {
+            this.backgroundMusic.pause();
+            setPlaying(false);
+        } else {
+            setPlaying(true);
+            this.backgroundMusic.play(success => {
+                if (success) {
+                    setPlaying(false);
+                    console.log('successfully finished playing');
+                } else {
+                    setPlaying(false);
+                    console.log('playback failed due to audio decoding errors');
+                }
+            });
+        }
+    };
 
 
     // the following functions modify the data in the list.
@@ -184,6 +203,11 @@ export default function App() {
                         <View style={styles.controlBtn} />
                     </TouchableOpacity>
                 </View>
+                <View style={styles.container}>
+                    <TouchableOpacity style={styles.playBtn} onPress={playPause}>
+                        <Ionicons name={'ios-play-outline'} size={36} color={'#FFFFFF'} />
+                    </TouchableOpacity>
+                </View>
             </View>
         </SafeAreaView>
     }
@@ -233,6 +257,11 @@ export default function App() {
 
                         >
                             <View style={styles.controlBtn} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.container}>
+                        <TouchableOpacity style={styles.playBtn} onPress={playPause}>
+                            <Ionicons name={'ios-play-outline'} size={36} color={'#FFFFFF'} />
                         </TouchableOpacity>
                     </View>
                 </View>
