@@ -18,6 +18,7 @@
     "react-native-web": "0.17.1",
     "expo-status-bar": "~1.2.0",
     "react-native-game-engine": "^1.1.0",
+    "expo-av": "~10.2.0"
     "react-native-stopwatch-timer": "0.0.20"
   },
   "devDependencies": {
