@@ -1,11 +1,13 @@
 import Constants from "./Constants";
 import Alert from "react-native";
+import SoundPlayer from 'react-native-sound-player'
+
 export default function (entities, { events, dispatch }) {
   const head = entities.head;
   const key = entities.key;
   const door = entities.door;
   const dialoguePrompt = entities.dialoguePrompt;
-
+  
   head.nextMove -= 1;
   if (events.length) {
     events.forEach((e) => {
@@ -117,6 +119,7 @@ export default function (entities, { events, dispatch }) {
     if (
       head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1] && head.keyGrabbed
     ) {
+	  
       door.position = [
         -100, -100
       ];
