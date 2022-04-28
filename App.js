@@ -7,6 +7,7 @@ import Head from "./components/Head";
 import Key from "./components/Key";
 import Door from "./components/Door";
 import GameLoops from "./systems/GameLoops";
+import DialoguePrompt from './components/DialoguePrompt';
 import { Item } from './components/ListItem.js'
 import { loadList, saveList } from './components/RemoteAccess.js'
 import { Stopwatch } from 'react-native-stopwatch-timer';
@@ -119,7 +120,7 @@ export default function App() {
             },
             key: {
               position: [
-                randomPositions(0, Constants.GRID_SIZE - 1),
+                randomPositions(0, Constants.GRID_SIZE - 4),
                 randomPositions(1, Constants.GRID_SIZE - 1),
               ],
 
@@ -127,6 +128,15 @@ export default function App() {
               keyTaken: 0,
               orientation: 1,
               renderer: <Key />,
+            },
+
+            dialoguePrompt: {
+              position: [
+                -1,
+                -1,
+              ],
+              size: Constants.CELL_SIZE,
+              renderer: <DialoguePrompt />,
             },
 
             door: {
