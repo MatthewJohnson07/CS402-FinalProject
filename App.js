@@ -22,6 +22,8 @@ var startlist = [
 
 var songShouldBePlaying = true;
 
+var returnedFromGame = false;
+
 var startTime;
 
 var endTime;
@@ -124,20 +126,33 @@ export default function App() {
     await sound.playAsync();
   }
 
+  async function playGameSound() {
+
+    const { sound } = await Audio.Sound.createAsync(
+      require('./music/YUGIOHtDotREngland.mp3')
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
   useEffect(() => {
     if (songShouldBePlaying) {
-      playSound();
+      if (viewmode) {
+        sound.unloadAsync();
+        playGameSound()
+      }
+      else {
+        if (returnedFromGame) {
+          sound.unloadAsync()
+        }
+        playSound();
+      }
       songShouldBePlaying = false;
-    }
-    if (viewmode) {
-      sound.unloadAsync();
-      //Audio.setIsEnabledAsync(false);
     }
   })
 
   // Hide status bar
   StatusBar.setHidden(true);
-
 
   // the following functions modify the data in the list.
   // read data from remote URL
@@ -304,7 +319,7 @@ export default function App() {
             switch (e) {
               case "game-over":
                 endTime = new Date().getTime()
-                const timeElapsed = (endTime - startTime)/1000
+                const timeElapsed = (endTime - startTime) / 1000
                 if (timeElapsed < DATA[9].completionTime) {
                   alert('Congratulations! You earned a high score!')
                   var i = 0
@@ -321,6 +336,7 @@ export default function App() {
                 alert('Going back to the menu, please check the leaderboard!')
                 setIsGameRunning(false);
                 setVMode(false);
+                returnedFromGame = true;
                 songShouldBePlaying = true;
                 return;
             }
@@ -535,6 +551,7 @@ export default function App() {
     else // in Preview mode
     {
       setVMode(true);
+      songShouldBePlaying = true;
       setIsStopwatchStart(true);
       setIsGameRunning(true);
       startTime = new Date().getTime()
