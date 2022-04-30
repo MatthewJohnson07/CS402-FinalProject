@@ -135,6 +135,27 @@ export default function App() {
     await sound.playAsync();
   }
 
+  async function movedCursor() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('./sounds/KH1CursorMoveOriginal.mp3')
+    );
+    await sound.playAsync();
+  }
+
+  async function pressedPurple() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('./sounds/KH1Select.mp3')
+    );
+    await sound.playAsync();
+  }
+
+  async function loadedGame() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('./sounds/KH1LoadGame.mp3')
+    );
+    await sound.playAsync();
+  }
+
   useEffect(() => {
     if (songShouldBePlaying) {
       if (viewmode) {
@@ -252,7 +273,7 @@ export default function App() {
 
         <View style={styles.alterContainer}>
           <TouchableOpacity
-            onPress={() => goToLeaderboard()}
+            onPress={() => pressedA()}
           >
             <View style={styles.aBtn} />
           </TouchableOpacity>
@@ -445,7 +466,7 @@ export default function App() {
               </View>
               <View style={styles.controllerRow}>
                 <TouchableOpacity
-                  onPress={() => setMenuOption(false)}
+                  onPress={() => toggleMode()}
                 >
                   <View style={styles.controlBtn} />
                 </TouchableOpacity>
@@ -454,7 +475,7 @@ export default function App() {
 
             <View style={styles.alterContainer}>
               <TouchableOpacity
-                onPress={() => switchMode()}
+                onPress={() => pressedA()}
               >
                 <View style={styles.aBtn} />
               </TouchableOpacity>
@@ -493,7 +514,7 @@ export default function App() {
             </View>
             <View style={styles.controlContainer}>
               <View style={styles.controllerRow}>
-                <TouchableOpacity onPress={() => setMenuOption(true)}>
+                <TouchableOpacity onPress={() => toggleMode()}>
                   <View style={styles.controlBtn} />
                 </TouchableOpacity>
               </View>
@@ -521,7 +542,7 @@ export default function App() {
 
             <View style={styles.alterContainer}>
               <TouchableOpacity
-                onPress={() => goToLeaderboard()}
+                onPress={() => pressedA()}
               >
                 <View style={styles.aBtn} />
               </TouchableOpacity>
@@ -536,9 +557,26 @@ export default function App() {
 
   return (screenChoice);
 
+  function toggleMode() {
+    movedCursor()
+    if (menuOptionOne) {
+      setMenuOption(false)
+    }
+    else {
+      setMenuOption(true)
+    }
+  }
 
-
-
+  function pressedA() {
+    if (!menuOptionOne) {
+      pressedPurple()
+      goToLeaderboard()
+    }
+    else {
+      loadedGame()
+      switchMode()
+    }
+  }
 
   function switchMode() {
     if (viewmode) // in grid mode
