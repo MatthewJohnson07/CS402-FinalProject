@@ -11,6 +11,7 @@ import { Item } from './components/ListItem.js'
 import { loadList, saveList } from './components/RemoteAccess.js'
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import { Audio } from 'expo-av';  // For music
+import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
 
 const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
 
@@ -20,6 +21,63 @@ var startlist = [
 ];
 
 var songShouldBePlaying = true;
+
+var startTime;
+
+var endTime;
+
+var DATA = [
+  {
+    id: 1,
+    name: 'RFR',
+    completionTime: 60,
+  },
+  {
+    id: 2,
+    name: 'RFR',
+    completionTime: 60,
+  },
+  {
+    id: 3,
+    name: 'RFR',
+    completionTime: 60,
+  },
+  {
+    id: 4,
+    name: 'RFR',
+    completionTime: 60,
+  },
+  {
+    id: 5,
+    name: 'RFR',
+    completionTime: 60,
+  },
+  {
+    id: 6,
+    name: 'RFR',
+    completionTime: 60,
+  },
+  {
+    id: 7,
+    name: 'RFR',
+    completionTime: 60,
+  },
+  {
+    id: 8,
+    name: 'RFR',
+    completionTime: 60,
+  },
+  {
+    id: 9,
+    name: 'RFR',
+    completionTime: 60,
+  },
+  {
+    id: 10,
+    name: 'RFR',
+    completionTime: 60,
+  },
+];
 
 export default function App() {
 
@@ -110,61 +168,19 @@ export default function App() {
   );
   */
 
-  const DATA = [
-    {
-      id: 1,
-      title: 'RFR - 00:01:00.000'
-    },
-    {
-      id: 2,
-      title: 'RFR - 00:01:00.000'
-    },
-    {
-      id: 3,
-      title: 'RFR - 00:01:00.000'
-    },
-    {
-      id: 4,
-      title: 'RFR - 00:01:00.000'
-    },
-    {
-      id: 5,
-      title: 'RFR - 00:01:00.000'
-    },
-    {
-      id: 6,
-      title: 'RFR - 00:01:00.000'
-    },
-    {
-      id: 7,
-      title: 'RFR - 00:01:00.000'
-    },
-    {
-      id: 8,
-      title: 'RFR - 00:01:00.000'
-    },
-    {
-      id: 9,
-      title: 'RFR - 00:01:00.000'
-    },
-    {
-      id: 10,
-      title: 'RFR - 00:01:00.000'
-    },
-  ];
-
   const getItem = (data, index) => (
     {
       id: data[index].id,
-      title: data[index].title
+      name: data[index].name,
+      completionTime: data[index].completionTime
     }
   );
 
   const getItemCount = (data) => data.length;
 
-  const Item = ({ id, title }) => (
+  const Item = ({ id, name, completionTime }) => (
     <View style={styles.item}>
-      <Text style={styles.title}>{id} - {title}</Text>
+      <Text style={styles.title}>#{id}: {name} - {completionTime}</Text>
     </View>
   );
 
@@ -172,7 +188,7 @@ export default function App() {
     <VirtualizedList
       data={DATA}
       initialNumToRender={10}
-      renderItem={({ item }) => <Item title={item.title} id={item.id} />}
+      renderItem={({ item }) => <Item name={item.name} completionTime={item.completionTime} id={item.id} />}
       keyExtractor={item => item.key}
       getItemCount={getItemCount}
       getItem={getItem}
@@ -287,7 +303,22 @@ export default function App() {
           onEvent={(e) => {
             switch (e) {
               case "game-over":
-                alert("Game over!");
+                endTime = new Date().getTime()
+                const timeElapsed = (endTime - startTime)/1000
+                if (timeElapsed < DATA[9].completionTime) {
+                  alert('Congratulations! You earned a high score!')
+                  var i = 0
+                  while (DATA[i].completionTime < timeElapsed) i++
+                  alert('You earned the #' + (i + 1) + ' score!')
+                  var j = 9
+                  while (j > i) {
+                    DATA[j].name = DATA[j - 1].name
+                    DATA[j].completionTime = DATA[j - 1].completionTime
+                    j--
+                  }
+                  DATA[i].completionTime = timeElapsed
+                }
+                alert('Going back to the menu, please check the leaderboard!')
                 setIsGameRunning(false);
                 setVMode(false);
                 songShouldBePlaying = true;
@@ -506,6 +537,12 @@ export default function App() {
       setVMode(true);
       setIsStopwatchStart(true);
       setIsGameRunning(true);
+      startTime = new Date().getTime()
+      console.log(startTime)
+      console.log(startTime)
+      console.log(startTime)
+      console.log(startTime)
+      console.log(startTime)
     }
   }
 
