@@ -264,7 +264,7 @@ export default function App() {
             <View style={styles.controlContainer}>
               <View style={styles.controllerRow}>
                 <TouchableOpacity
-                  onPress={() => playSound()}
+                  
                 >
                   <View style={styles.controlBtn} />
                 </TouchableOpacity>
