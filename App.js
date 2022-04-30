@@ -25,8 +25,14 @@ export default function App() {
 
   var emptydata = [];
   //necessary functions for the <VirtualList> Component
+
+  /*
   const getItemCount = (data) => list.length; // return the total number of items in the actual list.  Ignore data
+  */
+
+  /*
   const getItem = (data, index) => list[index]; // get an individual item from the actual data list. Ignore data
+  */
 
   // here we can use fetch to load an initial data set from a remote url
   // var urladdress = "http://mec402.boisestate.edu/cgi-bin/cs402/onejson"
@@ -65,7 +71,7 @@ export default function App() {
       playSound();
       songShouldBePlaying = false;
     }
-    if (viewLeaderboard || viewmode) {
+    if (viewmode) {
       sound.unloadAsync();
       //Audio.setIsEnabledAsync(false);
     }
@@ -86,14 +92,11 @@ export default function App() {
   // this function is called to draw a single item inside of the virtual list
   const renderItem = ({ item, index }) => {
     return (
-      <Item
-        item={item}
-        backgroundColor={"black"}
-        textColor={"white"}
-      />
+      <Text styles={styles.list}>{index}</Text>
     );
   };
 
+  /*
   var avirtlist = (
     <VirtualizedList
       styles={styles.list}
@@ -105,18 +108,126 @@ export default function App() {
       getItem={getItem}
     />
   );
+  */
+
+  const DATA = [
+    {
+      id: 1,
+      title: 'RFR - 00:01:00.000'
+    },
+    {
+      id: 2,
+      title: 'RFR - 00:01:00.000'
+    },
+    {
+      id: 3,
+      title: 'RFR - 00:01:00.000'
+    },
+    {
+      id: 4,
+      title: 'RFR - 00:01:00.000'
+    },
+    {
+      id: 5,
+      title: 'RFR - 00:01:00.000'
+    },
+    {
+      id: 6,
+      title: 'RFR - 00:01:00.000'
+    },
+    {
+      id: 7,
+      title: 'RFR - 00:01:00.000'
+    },
+    {
+      id: 8,
+      title: 'RFR - 00:01:00.000'
+    },
+    {
+      id: 9,
+      title: 'RFR - 00:01:00.000'
+    },
+    {
+      id: 10,
+      title: 'RFR - 00:01:00.000'
+    },
+  ];
+
+  const getItem = (data, index) => (
+    {
+      id: data[index].id,
+      title: data[index].title
+    }
+  );
+
+  const getItemCount = (data) => data.length;
+
+  const Item = ({ id, title }) => (
+    <View style={styles.item}>
+      <Text style={styles.title}>{id} - {title}</Text>
+    </View>
+  );
+
+  var avirtlist = (
+    <VirtualizedList
+      data={DATA}
+      initialNumToRender={10}
+      renderItem={({ item }) => <Item title={item.title} id={item.id} />}
+      keyExtractor={item => item.key}
+      getItemCount={getItemCount}
+      getItem={getItem}
+    />
+  );
 
   if (viewLeaderboard) {
     screenChoice =
-      <SafeAreaView>
-
-        <View style={styles.startButton}>
-          <Button onPress={() => goToLeaderboard()}
-            title="Go Back"
-          />
+      <SafeAreaView style={styles.canvas}>
+        <View style={styles.backgroundImage}>
           {avirtlist}
+          <View style={styles.hint}>
+            <Text style={styles.hintText}>
+              Press the purple button to go back to the menu
+            </Text>
+          </View>
         </View>
-      </SafeAreaView>
+        <View style={styles.controlContainer}>
+          <View style={styles.controllerRow}>
+            <TouchableOpacity
+
+            >
+              <View style={styles.controlBtn} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.controllerRow}>
+            <TouchableOpacity
+
+            >
+              <View style={styles.controlBtn} />
+            </TouchableOpacity>
+            <View style={[styles.controlBtn, { backgroundColor: null }]} />
+            <TouchableOpacity
+
+            >
+              <View style={styles.controlBtn} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.controllerRow}>
+            <TouchableOpacity
+            >
+              <View style={styles.controlBtn} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.alterContainer}>
+          <TouchableOpacity
+            onPress={() => goToLeaderboard()}
+          >
+            <View style={styles.aBtn} />
+          </TouchableOpacity>
+        </View>
+
+      </SafeAreaView >
 
   }
   else
@@ -267,7 +378,7 @@ export default function App() {
             <View style={styles.controlContainer}>
               <View style={styles.controllerRow}>
                 <TouchableOpacity
-                  
+
                 >
                   <View style={styles.controlBtn} />
                 </TouchableOpacity>
@@ -483,7 +594,7 @@ const styles = StyleSheet.create({
   },
   startButtonView: {
     position: 'absolute',
-    top: (BoardSize * 2) / 5,
+    top: (BoardSize * 1) / 2,
   },
   selectedText: {
     color: 'black',
@@ -493,7 +604,7 @@ const styles = StyleSheet.create({
   },
   leaderboardButtonView: {
     position: 'absolute',
-    top: (BoardSize * 3) / 5,
+    top: (BoardSize * 7) / 10,
   },
   nonselectedText: {
     color: 'white',
@@ -509,5 +620,14 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontSize: 10,
+  },
+  leaderBoardView: {
+    width: BoardSize,
+    height: BoardSize
+  },
+  title: {
+    color: 'purple',
+    textAlign: 'center',
+    fontSize: 22,
   },
 });
