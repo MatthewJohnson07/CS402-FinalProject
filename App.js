@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Button, SafeAreaView, VirtualizedList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Button, SafeAreaView, VirtualizedList, StatusBar } from 'react-native';
 import { GameEngine } from "react-native-game-engine";
 import Constants from "./systems/Constants";
 import Head from "./components/Head";
@@ -71,6 +70,10 @@ export default function App() {
       //Audio.setIsEnabledAsync(false);
     }
   })
+
+  // Hide status bar
+  StatusBar.setHidden(true);
+
 
   // the following functions modify the data in the list.
   // read data from remote URL
@@ -462,22 +465,19 @@ const styles = StyleSheet.create({
   },
   gameNameText: {
     marginTop: 10,
-    fontFamily: 'Times New Roman',
-    fontSize: '32px',
+    fontSize: 32,
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
   },
   mainAuthorJoke: {
-    fontFamily: 'Georgia',
-    fontWeight: 'italics',
-    fontSize: '24px',
+    fontStyle: 'italic',
+    fontSize: 24,
     color: 'white',
     textAlign: 'center',
   },
   friendshipIsMagic: {
-    fontFamily: 'Lucida Handwriting',
-    fontSize: '16px',
+    fontSize: 16,
     color: 'white',
     textAlign: 'center',
   },
@@ -508,6 +508,6 @@ const styles = StyleSheet.create({
   hintText: {
     color: 'white',
     textAlign: 'center',
-    fontSize: '10px',
+    fontSize: 10,
   },
 });
