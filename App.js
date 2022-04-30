@@ -7,7 +7,7 @@ import Head from "./components/Head";
 import Key from "./components/Key";
 import Door from "./components/Door";
 import GameLoops from "./systems/GameLoops";
-import DialoguePrompt from './components/dialoguePrompt';
+import DialoguePrompt from './components/DialoguePrompt';
 import { Item } from './components/ListItem.js'
 import { loadList, saveList } from './components/RemoteAccess.js'
 import { Stopwatch } from 'react-native-stopwatch-timer';
@@ -19,6 +19,8 @@ const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
 var startlist = [
   { key: "RRR" }
 ];
+
+var songShouldBePlaying = true;
 
 export default function App() {
 
@@ -51,73 +53,74 @@ export default function App() {
   // The following code will play Dearly Beloved
   const [sound, setSound] = useState();
   async function playSound() {
+
     const { sound } = await Audio.Sound.createAsync(
-        require('./music/KH1DearlyBeloved.mp3')
+      require('./music/KH1DearlyBeloved.mp3')
     );
     setSound(sound);
     await sound.playAsync();
   }
-  // The following code plays song while on main menu, then stops once left
-  useEffect(() => {
-    console.log("should be playing")
-    playSound();
-    if(viewLeaderboard || viewmode){
-      console.log("stop playing")
-      sound.unloadAsync();
-      Audio.setIsEnabledAsync(false);
-    }
-  },)
 
+  useEffect(() => {
+    if (songShouldBePlaying) {
+      playSound();
+      songShouldBePlaying = false;
+    }
+    if (viewLeaderboard || viewmode) {
+      sound.unloadAsync();
+      //Audio.setIsEnabledAsync(false);
+    }
+  })
 
   // the following functions modify the data in the list.
   // read data from remote URL
   function loadButton() {
     var urladdress =
-        'https://cs.boisestate.edu/~scutchin/cs402/codesnips/loadjson.php?user=lkarlsson';
+      'https://cs.boisestate.edu/~scutchin/cs402/codesnips/loadjson.php?user=lkarlsson';
     const response = loadList(urladdress, list, setlist);
   }
 
   // this function is called to draw a single item inside of the virtual list
   const renderItem = ({ item, index }) => {
     return (
-        <Item
-            item={item}
-            backgroundColor={"black"}
-            textColor={"white"}
-        />
+      <Item
+        item={item}
+        backgroundColor={"black"}
+        textColor={"white"}
+      />
     );
   };
 
   var avirtlist = (
-      <VirtualizedList
-          styles={styles.list}
-          data={emptydata}
-          initialNumToRender={4}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index}
-          getItemCount={getItemCount}
-          getItem={getItem}
-      />
+    <VirtualizedList
+      styles={styles.list}
+      data={emptydata}
+      initialNumToRender={4}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => index}
+      getItemCount={getItemCount}
+      getItem={getItem}
+    />
   );
 
   if (viewLeaderboard) {
     screenChoice =
-        <SafeAreaView>
+      <SafeAreaView>
 
-          <View style={styles.startButton}>
-            <Button onPress={() => goToLeaderboard()}
-                    title="Go Back"
-            />
-            {avirtlist}
-          </View>
-        </SafeAreaView>
+        <View style={styles.startButton}>
+          <Button onPress={() => goToLeaderboard()}
+            title="Go Back"
+          />
+          {avirtlist}
+        </View>
+      </SafeAreaView>
 
   }
   else
-  if (viewmode) {
+    if (viewmode) {
 
-    screenChoice = <SafeAreaView style={styles.canvas}>
-      <GameEngine
+      screenChoice = <SafeAreaView style={styles.canvas}>
+        <GameEngine
           ref={engine}
           style={{
             width: BoardSize,
@@ -173,46 +176,47 @@ export default function App() {
                 alert("Game over!");
                 setIsGameRunning(false);
                 setVMode(false);
+                songShouldBePlaying = true;
                 return;
             }
           }}
-      />
-      <View style={styles.controlContainer}>
-        <View style={styles.controllerRow}>
-          <TouchableOpacity onPress={() => engine.current.dispatch("move-up")}>
-            <View style={styles.controlBtn} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.controllerRow}>
-          <TouchableOpacity
+        />
+        <View style={styles.controlContainer}>
+          <View style={styles.controllerRow}>
+            <TouchableOpacity onPress={() => engine.current.dispatch("move-up")}>
+              <View style={styles.controlBtn} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.controllerRow}>
+            <TouchableOpacity
               onPress={() => engine.current.dispatch("move-left")}
-          >
-            <View style={styles.controlBtn} />
-          </TouchableOpacity>
-          <View style={[styles.controlBtn, { backgroundColor: null }]} />
-          <TouchableOpacity
+            >
+              <View style={styles.controlBtn} />
+            </TouchableOpacity>
+            <View style={[styles.controlBtn, { backgroundColor: null }]} />
+            <TouchableOpacity
               onPress={() => engine.current.dispatch("move-right")}
-          >
-            <View style={styles.controlBtn} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.controllerRow}>
-          <TouchableOpacity
+            >
+              <View style={styles.controlBtn} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.controllerRow}>
+            <TouchableOpacity
               onPress={() => engine.current.dispatch("move-down")}
+            >
+              <View style={styles.controlBtn} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.alterContainer}>
+          <TouchableOpacity
+            onPress={() => engine.current.dispatch("a")}
           >
-            <View style={styles.controlBtn} />
+            <View style={styles.aBtn} />
           </TouchableOpacity>
         </View>
-      </View>
-
-      <View style={styles.alterContainer}>
-        <TouchableOpacity
-            onPress={() => engine.current.dispatch("a")}
-        >
-          <View style={styles.aBtn} />
-        </TouchableOpacity>
-      </View>
-      <Stopwatch
+        <Stopwatch
           laps
           msecs
           start={isStopwatchStart}
@@ -222,14 +226,14 @@ export default function App() {
           getTime={(time) => {
 
           }}
-      />
+        />
 
-    </SafeAreaView>
-  }
-  else {
+      </SafeAreaView>
+    }
+    else {
 
-    if (menuOptionOne) {
-      screenChoice =
+      if (menuOptionOne) {
+        screenChoice =
           <SafeAreaView style={styles.canvas}>
             <View style={styles.backgroundImage}>
               <Text style={styles.gameNameText}>
@@ -260,7 +264,7 @@ export default function App() {
             <View style={styles.controlContainer}>
               <View style={styles.controllerRow}>
                 <TouchableOpacity
-                    onPress={() => playSound()}
+                  onPress={() => playSound()}
                 >
                   <View style={styles.controlBtn} />
                 </TouchableOpacity>
@@ -280,7 +284,7 @@ export default function App() {
               </View>
               <View style={styles.controllerRow}>
                 <TouchableOpacity
-                    onPress={() => setMenuOption(false)}
+                  onPress={() => setMenuOption(false)}
                 >
                   <View style={styles.controlBtn} />
                 </TouchableOpacity>
@@ -289,16 +293,16 @@ export default function App() {
 
             <View style={styles.alterContainer}>
               <TouchableOpacity
-                  onPress={() => switchMode()}
+                onPress={() => switchMode()}
               >
                 <View style={styles.aBtn} />
               </TouchableOpacity>
             </View>
 
           </SafeAreaView >
-    }
-    else {
-      screenChoice =
+      }
+      else {
+        screenChoice =
           <SafeAreaView style={styles.canvas}>
             <View style={styles.backgroundImage}>
               <Text style={styles.gameNameText}>
@@ -356,18 +360,18 @@ export default function App() {
 
             <View style={styles.alterContainer}>
               <TouchableOpacity
-                  onPress={() => goToLeaderboard()}
+                onPress={() => goToLeaderboard()}
               >
                 <View style={styles.aBtn} />
               </TouchableOpacity>
             </View>
 
           </SafeAreaView >
+      }
+
+
+
     }
-
-
-
-  }
 
   return (screenChoice);
 
@@ -379,6 +383,7 @@ export default function App() {
     if (viewmode) // in grid mode
     {
       setVMode(false);
+      songShouldBePlaying = true;
       setIsStopwatchStart(false);
       setResetStopwatch(true);
     }
