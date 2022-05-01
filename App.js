@@ -7,6 +7,7 @@ import Key from "./components/Key";
 import Door from "./components/Door";
 import GameLoops from "./systems/GameLoops";
 import DialoguePrompt from './components/DialoguePrompt';
+import Dialogue from './components/Dialogue';
 import { Item } from './components/ListItem.js'
 import { loadList, saveList } from './components/RemoteAccess.js'
 import { Stopwatch } from 'react-native-stopwatch-timer';
@@ -315,7 +316,6 @@ export default function App() {
               orientation: 1,
               renderer: <Key />,
             },
-
             dialoguePrompt: {
               position: [
                 -1,
@@ -324,7 +324,6 @@ export default function App() {
               size: Constants.CELL_SIZE,
               renderer: <DialoguePrompt />,
             },
-
             door: {
               position: [
                 Constants.GRID_SIZE - 1, 0
@@ -332,7 +331,18 @@ export default function App() {
               size: Constants.CELL_SIZE,
               locked: 1,
               renderer: <Door />,
-            }
+            },
+            dialogue: {
+              position: [
+                -10000,
+                BoardSize / 2
+              ],
+              display: 0,
+              size: BoardSize,
+              dialogueNumber: 1,
+              location: 0,
+              renderer: <Dialogue />,
+            },
           }}
           systems={[GameLoops]}
           running={isGameRunning}
