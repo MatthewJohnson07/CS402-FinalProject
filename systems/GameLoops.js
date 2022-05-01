@@ -1,16 +1,18 @@
 import Constants from "./Constants";
 import Alert from "react-native";
+var messageProgression = 0;
 export default function (entities, { events, dispatch }) {
   const head = entities.head;
   const key = entities.key;
   const door = entities.door;
   const dialoguePrompt = entities.dialoguePrompt;
-
+  const dialogue = entities.dialogue;
   head.nextMove -= 1;
   if (events.length) {
     events.forEach((e) => {
       switch (e) {
         case "move-up":
+          if (messageProgression) break;
           if (head.orientation == 3) {
             head.yPos = -1;
             head.xPos = 0;
@@ -21,6 +23,7 @@ export default function (entities, { events, dispatch }) {
           }
           return;
         case "move-right":
+          if (messageProgression) break;
           if (head.orientation == 4) {
             head.xPos = 1;
             head.yPos = 0;
@@ -31,6 +34,7 @@ export default function (entities, { events, dispatch }) {
           }
           return;
         case "move-down":
+          if (messageProgression) break;
           if (head.orientation == 1) {
             head.yPos = 1;
             head.xPos = 0;
@@ -41,6 +45,7 @@ export default function (entities, { events, dispatch }) {
           }
           return;
         case "move-left":
+          if (messageProgression) break;
           if (head.orientation == 2) {
             head.xPos = -1;
             head.yPos = 0;
@@ -52,6 +57,16 @@ export default function (entities, { events, dispatch }) {
           return;
         case "a":
           if (head.position[0] - 1 == key.position[0] && head.position[1] == key.position[1]) {
+            messageProgression++
+            if (messageProgression >= 5 || messageProgression == 0) {
+              messageProgression = 0
+              dialogue.display = 0
+            }
+            else {
+              dialogue.display = 1
+              dialogue.dialogueNumber = messageProgression
+              dialogue.position[0] = 0
+            }
             key.keyTaken = 1
             key.orientation = 1
             head.keyGrabbed = true;
@@ -60,6 +75,16 @@ export default function (entities, { events, dispatch }) {
           }
 
           if (head.position[0] + 1 == key.position[0] && head.position[1] == key.position[1]) {
+            messageProgression++
+            if (messageProgression >= 5 || messageProgression == 0) {
+              messageProgression = 0
+              dialogue.display = 0
+            }
+            else {
+              dialogue.display = 1
+              dialogue.dialogueNumber = messageProgression
+              dialogue.position[0] = 0
+            }
             key.keyTaken = 1
             key.orientation = 2
             head.keyGrabbed = true;
@@ -91,8 +116,8 @@ export default function (entities, { events, dispatch }) {
         head.position[1] + head.yPos == door.position[1]) ||
       (head.position[0] + head.xPos == key.position[0] &&
         head.position[1] + head.yPos == key.position[1] &&
-        !head.keyGrabbed) || 
-        (head.position[0] + head.xPos == key.position[0] && head.position[1] + head.yPos == key.position[1])
+        !head.keyGrabbed) ||
+      (head.position[0] + head.xPos == key.position[0] && head.position[1] + head.yPos == key.position[1])
     ) {
       //head.position[0] -= head.xPos;
       //head.position[1] -= head.yPos;
@@ -112,6 +137,12 @@ export default function (entities, { events, dispatch }) {
           dialoguePrompt.position[1] = key.position[1] - 1;
         }
       }
+    }
+    if (Constants.GRID_SIZE / 2 < head.position[1]) {
+      dialogue.location = 0
+    }
+    else {
+      dialogue.location = 1
     }
 
     if (
