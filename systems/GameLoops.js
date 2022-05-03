@@ -57,9 +57,9 @@ export default function (entities, { events, dispatch }) {
           }
           return;
         case "a":
-          if (head.position[0] - 1 == key.position[0] && head.position[1] == key.position[1]) {
+          if ((head.position[0] - 1 == key.position[0] || head.position[0] + 1 == key.position[0]) && head.position[1] == key.position[1]) {
             messageProgression++
-            if (messageProgression >= 5) {//} || messageProgression == 0) {
+            if (messageProgression > 5) {//} || messageProgression == 0) {
               PlaySound('loadedGame')
               messageProgression = 0
               dialogue.display = 0
@@ -71,24 +71,6 @@ export default function (entities, { events, dispatch }) {
             }
             key.keyTaken = 1
             key.orientation = 1
-            head.keyGrabbed = true;
-            dialoguePrompt.position[0] = -1;
-            dialoguePrompt.position[1] = -1;
-          }
-
-          if (head.position[0] + 1 == key.position[0] && head.position[1] == key.position[1]) {
-            messageProgression++
-            if (messageProgression >= 5 || messageProgression == 0) {
-              messageProgression = 0
-              dialogue.display = 0
-            }
-            else {
-              dialogue.display = 1
-              dialogue.dialogueNumber = messageProgression
-              dialogue.position[0] = 0
-            }
-            key.keyTaken = 1
-            key.orientation = 2
             head.keyGrabbed = true;
             dialoguePrompt.position[0] = -1;
             dialoguePrompt.position[1] = -1;
@@ -110,8 +92,6 @@ export default function (entities, { events, dispatch }) {
   }
 
   if (head.nextMove === 0) {
-
-
     if (
       head.position[0] + head.xPos < 0 ||
       head.position[0] + head.xPos >= Constants.GRID_SIZE ||
@@ -134,10 +114,27 @@ export default function (entities, { events, dispatch }) {
       head.xPos = 0;
       head.yPos = 0;
     }
+    else {
+      head.position[0] += head.xPos;
+      head.position[1] += head.yPos;
 
-    head.position[0] += head.xPos;
-    head.position[1] += head.yPos;
-
+      if (
+        head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1] && head.keyGrabbed
+      ) {
+        door.position = [
+          -100, -100
+        ];
+        head.position = [
+          -100, -100
+        ];
+        dispatch("game-over");
+      }
+      else {
+        if (!(head.position[0] == 0 && head.position[1] == 0) && !(head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1])) {
+          PlaySound('grassyStep');
+        }
+      }
+    }
     dialoguePrompt.position[0] = -1;
     dialoguePrompt.position[1] = -1;
     if (head.position[1] == key.position[1]) {
@@ -153,18 +150,6 @@ export default function (entities, { events, dispatch }) {
     }
     else {
       dialogue.location = 1
-    }
-
-    if (
-      head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1] && head.keyGrabbed
-    ) {
-      door.position = [
-        -100, -100
-      ];
-      head.position = [
-        -100, -100
-      ];
-      dispatch("game-over");
     }
   }
   return entities;
