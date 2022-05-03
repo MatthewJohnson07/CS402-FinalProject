@@ -1,5 +1,6 @@
 import Constants from "./Constants";
 import Alert from "react-native";
+import PlaySound from "../PlaySounds";
 var messageProgression = 0;
 export default function (entities, { events, dispatch }) {
   const head = entities.head;
@@ -58,7 +59,8 @@ export default function (entities, { events, dispatch }) {
         case "a":
           if (head.position[0] - 1 == key.position[0] && head.position[1] == key.position[1]) {
             messageProgression++
-            if (messageProgression >= 5 || messageProgression == 0) {
+            if (messageProgression >= 5) {//} || messageProgression == 0) {
+              PlaySound('loadedGame')
               messageProgression = 0
               dialogue.display = 0
             }
@@ -91,8 +93,16 @@ export default function (entities, { events, dispatch }) {
             dialoguePrompt.position[0] = -1;
             dialoguePrompt.position[1] = -1;
           }
-          if (head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1] + 1 && head.orientation == 3 && head.keyGrabbed) {
+          if (head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1] + 1 && head.orientation == 3 && head.keyGrabbed && door.locked == 1) {
             door.locked = 0;
+            PlaySound('doorUnlocked');
+          }
+          else if (head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1] + 1 && head.orientation == 3 && head.keyGrabbed && door.locked == 0) {
+            door.opened = 1;
+            PlaySound('openedDoor');
+          }
+          else if (head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1] + 1 && head.orientation == 3 && !head.keyGrabbed) {
+            PlaySound('lockedDoor');
           }
           return;
       }
