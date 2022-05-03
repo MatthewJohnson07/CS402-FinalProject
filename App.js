@@ -108,8 +108,7 @@ export default function App() {
 
   const engine = useRef(null);
   const [isGameRunning, setIsGameRunning] = useState(true);
-  const [viewmode, setVMode] = useState(false);
-  const [viewLeaderboard, setLBoard] = useState(false);
+  const [viewmode, setVMode] = useState(1); // 1 = Main Menu, 2 = Game Mode, 3 = Leaderboard
   const [menuOptionOne, setMenuOption] = useState(true);
 
   const randomPositions = (min, max) => {
@@ -159,13 +158,14 @@ export default function App() {
 
   useEffect(() => {
     if (songShouldBePlaying) {
-      if (viewmode) {
+      if (viewmode == 2) {
         sound.unloadAsync();
         playGameSound()
       }
       else {
         if (returnedFromGame) {
           sound.unloadAsync()
+          returnedFromGame = false
         }
         playSound();
       }
@@ -231,8 +231,7 @@ export default function App() {
       getItem={getItem}
     />
   );
-
-  if (viewLeaderboard) {
+  if (viewmode == 3) {
     screenChoice =
       <SafeAreaView style={styles.canvas}>
         <View style={styles.backgroundImage}>
@@ -283,287 +282,284 @@ export default function App() {
       </SafeAreaView >
 
   }
-  else
-    if (viewmode) {
+  else if (viewmode == 2) {
 
-      screenChoice = <SafeAreaView style={styles.canvas}>
-        <GameEngine
-          ref={engine}
-          style={{
-            width: BoardSize,
-            height: BoardSize,
-            flex: null,
-            backgroundColor: "green",
-          }}
-          entities={{
-            head: {
-              position: [0, 0],
-              size: Constants.CELL_SIZE,
-              nextMove: 1,
-              xPos: 0,
-              yPos: 0,
-              keyGrabbed: false,
-              renderer: <Head />
-            },
-            key: {
-              position: [
-                randomPositions(0, Constants.GRID_SIZE - 4),
-                randomPositions(1, Constants.GRID_SIZE - 1),
-              ],
+    screenChoice = <SafeAreaView style={styles.canvas}>
+      <GameEngine
+        ref={engine}
+        style={{
+          width: BoardSize,
+          height: BoardSize,
+          flex: null,
+          backgroundColor: "green",
+        }}
+        entities={{
+          head: {
+            position: [0, 0],
+            size: Constants.CELL_SIZE,
+            nextMove: 1,
+            xPos: 0,
+            yPos: 0,
+            keyGrabbed: false,
+            renderer: <Head />
+          },
+          key: {
+            position: [
+              randomPositions(0, Constants.GRID_SIZE - 4),
+              randomPositions(1, Constants.GRID_SIZE - 1),
+            ],
 
-              size: Constants.CELL_SIZE,
-              keyTaken: 0,
-              orientation: 1,
-              renderer: <Key />,
-            },
-            dialoguePrompt: {
-              position: [
-                -1,
-                -1,
-              ],
-              size: Constants.CELL_SIZE,
-              renderer: <DialoguePrompt />,
-            },
-            door: {
-              position: [
-                Constants.GRID_SIZE - 1, 0
-              ],
-              size: Constants.CELL_SIZE,
-              locked: 1,
-              renderer: <Door />,
-            },
-            dialogue: {
-              position: [
-                -10000,
-                BoardSize / 2
-              ],
-              display: 0,
-              size: BoardSize,
-              dialogueNumber: 1,
-              location: 0,
-              renderer: <Dialogue />,
-            },
-          }}
-          systems={[GameLoops]}
-          running={isGameRunning}
-          onEvent={(e) => {
-            switch (e) {
-              case "game-over":
-                endTime = new Date().getTime()
-                const timeElapsed = (endTime - startTime) / 1000
-                if (timeElapsed < DATA[9].completionTime) {
-                  alert('Congratulations! You earned a high score!')
-                  var i = 0
-                  while (DATA[i].completionTime < timeElapsed) i++
-                  alert('You earned the #' + (i + 1) + ' score!')
-                  var j = 9
-                  while (j > i) {
-                    DATA[j].name = DATA[j - 1].name
-                    DATA[j].completionTime = DATA[j - 1].completionTime
-                    j--
-                  }
-                  DATA[i].completionTime = timeElapsed
+            size: Constants.CELL_SIZE,
+            keyTaken: 0,
+            orientation: 1,
+            renderer: <Key />,
+          },
+          dialoguePrompt: {
+            position: [
+              -1,
+              -1,
+            ],
+            size: Constants.CELL_SIZE,
+            renderer: <DialoguePrompt />,
+          },
+          door: {
+            position: [
+              Constants.GRID_SIZE - 1, 0
+            ],
+            size: Constants.CELL_SIZE,
+            locked: 1,
+            renderer: <Door />,
+          },
+          dialogue: {
+            position: [
+              -10000,
+              BoardSize / 2
+            ],
+            display: 0,
+            size: BoardSize,
+            dialogueNumber: 1,
+            location: 0,
+            renderer: <Dialogue />,
+          },
+        }}
+        systems={[GameLoops]}
+        running={isGameRunning}
+        onEvent={(e) => {
+          switch (e) {
+            case "game-over":
+              endTime = new Date().getTime()
+              const timeElapsed = (endTime - startTime) / 1000
+              if (timeElapsed < DATA[9].completionTime) {
+                alert('Congratulations! You earned a high score!')
+                var i = 0
+                while (DATA[i].completionTime < timeElapsed) i++
+                alert('You earned the #' + (i + 1) + ' score!')
+                var j = 9
+                while (j > i) {
+                  DATA[j].name = DATA[j - 1].name
+                  DATA[j].completionTime = DATA[j - 1].completionTime
+                  j--
                 }
-                alert('Going back to the menu, please check the leaderboard!')
-                setIsGameRunning(false);
-                setVMode(false);
-                returnedFromGame = true;
-                songShouldBePlaying = true;
-                return;
-            }
-          }}
-        />
-        <View style={styles.controlContainer}>
-          <View style={styles.controllerRow}>
-            <TouchableOpacity onPress={() => engine.current.dispatch("move-up")}>
-              <View style={styles.controlBtn} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.controllerRow}>
-            <TouchableOpacity
-              onPress={() => engine.current.dispatch("move-left")}
-            >
-              <View style={styles.controlBtn} />
-            </TouchableOpacity>
-            <View style={[styles.controlBtn, { backgroundColor: null }]} />
-            <TouchableOpacity
-              onPress={() => engine.current.dispatch("move-right")}
-            >
-              <View style={styles.controlBtn} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.controllerRow}>
-            <TouchableOpacity
-              onPress={() => engine.current.dispatch("move-down")}
-            >
-              <View style={styles.controlBtn} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={styles.alterContainer}>
-          <TouchableOpacity
-            onPress={() => engine.current.dispatch("a")}
-          >
-            <View style={styles.aBtn} />
+                DATA[i].completionTime = timeElapsed
+              }
+              alert('Going back to the menu, please check the leaderboard!')
+              setIsGameRunning(false);
+              backToMenu();
+              return;
+          }
+        }}
+      />
+      <View style={styles.controlContainer}>
+        <View style={styles.controllerRow}>
+          <TouchableOpacity onPress={() => engine.current.dispatch("move-up")}>
+            <View style={styles.controlBtn} />
           </TouchableOpacity>
         </View>
-        <Stopwatch
-          laps
-          msecs
-          start={isStopwatchStart}
-          //To start
-          reset={resetStopwatch}
-          //To reset
-          getTime={(time) => {
+        <View style={styles.controllerRow}>
+          <TouchableOpacity
+            onPress={() => engine.current.dispatch("move-left")}
+          >
+            <View style={styles.controlBtn} />
+          </TouchableOpacity>
+          <View style={[styles.controlBtn, { backgroundColor: null }]} />
+          <TouchableOpacity
+            onPress={() => engine.current.dispatch("move-right")}
+          >
+            <View style={styles.controlBtn} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.controllerRow}>
+          <TouchableOpacity
+            onPress={() => engine.current.dispatch("move-down")}
+          >
+            <View style={styles.controlBtn} />
+          </TouchableOpacity>
+        </View>
+      </View>
 
-          }}
-        />
+      <View style={styles.alterContainer}>
+        <TouchableOpacity
+          onPress={() => engine.current.dispatch("a")}
+        >
+          <View style={styles.aBtn} />
+        </TouchableOpacity>
+      </View>
+      <Stopwatch
+        laps
+        msecs
+        start={isStopwatchStart}
+        //To start
+        reset={resetStopwatch}
+        //To reset
+        getTime={(time) => {
 
-      </SafeAreaView>
+        }}
+      />
+
+    </SafeAreaView>
+  }
+  else if (viewmode == 1) {
+
+    if (menuOptionOne) {
+      screenChoice =
+        <SafeAreaView style={styles.canvas}>
+          <View style={styles.backgroundImage}>
+            <Text style={styles.gameNameText}>
+              GENERIC TOP-DOWN RPG STYLE GAME
+            </Text>
+            <Text style={styles.mainAuthorJoke}>
+              BY ROSS RIPPEE
+            </Text>
+            <Text style={styles.friendshipIsMagic}>
+              and Matthew, Lukas and Javi
+            </Text>
+            <View style={styles.startButtonView}>
+              <Text style={styles.selectedText}>
+                START GAME
+              </Text>
+            </View>
+            <View style={styles.leaderboardButtonView}>
+              <Text style={styles.nonselectedText}>
+                LEADERBOARD
+              </Text>
+            </View>
+            <View style={styles.hint}>
+              <Text style={styles.hintText}>
+                Press the purple button to start the game
+              </Text>
+            </View>
+          </View>
+          <View style={styles.controlContainer}>
+            <View style={styles.controllerRow}>
+              <TouchableOpacity
+
+              >
+                <View style={styles.controlBtn} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.controllerRow}>
+              <TouchableOpacity
+
+              >
+                <View style={styles.controlBtn} />
+              </TouchableOpacity>
+              <View style={[styles.controlBtn, { backgroundColor: null }]} />
+              <TouchableOpacity
+
+              >
+                <View style={styles.controlBtn} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.controllerRow}>
+              <TouchableOpacity
+                onPress={() => toggleMode()}
+              >
+                <View style={styles.controlBtn} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.alterContainer}>
+            <TouchableOpacity
+              onPress={() => pressedA()}
+            >
+              <View style={styles.aBtn} />
+            </TouchableOpacity>
+          </View>
+
+        </SafeAreaView >
     }
     else {
-
-      if (menuOptionOne) {
-        screenChoice =
-          <SafeAreaView style={styles.canvas}>
-            <View style={styles.backgroundImage}>
-              <Text style={styles.gameNameText}>
-                GENERIC TOP-DOWN RPG STYLE GAME
+      screenChoice =
+        <SafeAreaView style={styles.canvas}>
+          <View style={styles.backgroundImage}>
+            <Text style={styles.gameNameText}>
+              GENERIC TOP-DOWN RPG STYLE GAME
+            </Text>
+            <Text style={styles.mainAuthorJoke}>
+              BY ROSS RIPPEE
+            </Text>
+            <Text style={styles.friendshipIsMagic}>
+              and Matthew, Lukas and Javi
+            </Text>
+            <View style={styles.startButtonView}>
+              <Text style={styles.nonselectedText}>
+                START GAME
               </Text>
-              <Text style={styles.mainAuthorJoke}>
-                BY ROSS RIPPEE
-              </Text>
-              <Text style={styles.friendshipIsMagic}>
-                and Matthew, Lukas and Javi
-              </Text>
-              <View style={styles.startButtonView}>
-                <Text style={styles.selectedText}>
-                  START GAME
-                </Text>
-              </View>
-              <View style={styles.leaderboardButtonView}>
-                <Text style={styles.nonselectedText}>
-                  LEADERBOARD
-                </Text>
-              </View>
-              <View style={styles.hint}>
-                <Text style={styles.hintText}>
-                  Press the purple button to start the game
-                </Text>
-              </View>
             </View>
-            <View style={styles.controlContainer}>
-              <View style={styles.controllerRow}>
-                <TouchableOpacity
-
-                >
-                  <View style={styles.controlBtn} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.controllerRow}>
-                <TouchableOpacity
-
-                >
-                  <View style={styles.controlBtn} />
-                </TouchableOpacity>
-                <View style={[styles.controlBtn, { backgroundColor: null }]} />
-                <TouchableOpacity
-
-                >
-                  <View style={styles.controlBtn} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.controllerRow}>
-                <TouchableOpacity
-                  onPress={() => toggleMode()}
-                >
-                  <View style={styles.controlBtn} />
-                </TouchableOpacity>
-              </View>
+            <View style={styles.leaderboardButtonView}>
+              <Text style={styles.selectedText}>
+                LEADERBOARD
+              </Text>
             </View>
-
-            <View style={styles.alterContainer}>
-              <TouchableOpacity
-                onPress={() => pressedA()}
-              >
-                <View style={styles.aBtn} />
+            <View style={styles.hint}>
+              <Text style={styles.hintText}>
+                Press the purple button to view the top scores
+              </Text>
+            </View>
+          </View>
+          <View style={styles.controlContainer}>
+            <View style={styles.controllerRow}>
+              <TouchableOpacity onPress={() => toggleMode()}>
+                <View style={styles.controlBtn} />
               </TouchableOpacity>
             </View>
-
-          </SafeAreaView >
-      }
-      else {
-        screenChoice =
-          <SafeAreaView style={styles.canvas}>
-            <View style={styles.backgroundImage}>
-              <Text style={styles.gameNameText}>
-                GENERIC TOP-DOWN RPG STYLE GAME
-              </Text>
-              <Text style={styles.mainAuthorJoke}>
-                BY ROSS RIPPEE
-              </Text>
-              <Text style={styles.friendshipIsMagic}>
-                and Matthew, Lukas and Javi
-              </Text>
-              <View style={styles.startButtonView}>
-                <Text style={styles.nonselectedText}>
-                  START GAME
-                </Text>
-              </View>
-              <View style={styles.leaderboardButtonView}>
-                <Text style={styles.selectedText}>
-                  LEADERBOARD
-                </Text>
-              </View>
-              <View style={styles.hint}>
-                <Text style={styles.hintText}>
-                  Press the purple button to view the top scores
-                </Text>
-              </View>
-            </View>
-            <View style={styles.controlContainer}>
-              <View style={styles.controllerRow}>
-                <TouchableOpacity onPress={() => toggleMode()}>
-                  <View style={styles.controlBtn} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.controllerRow}>
-                <TouchableOpacity
-
-                >
-                  <View style={styles.controlBtn} />
-                </TouchableOpacity>
-                <View style={[styles.controlBtn, { backgroundColor: null }]} />
-                <TouchableOpacity
-
-                >
-                  <View style={styles.controlBtn} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.controllerRow}>
-                <TouchableOpacity
-
-                >
-                  <View style={styles.controlBtn} />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={styles.alterContainer}>
+            <View style={styles.controllerRow}>
               <TouchableOpacity
-                onPress={() => pressedA()}
+
               >
-                <View style={styles.aBtn} />
+                <View style={styles.controlBtn} />
+              </TouchableOpacity>
+              <View style={[styles.controlBtn, { backgroundColor: null }]} />
+              <TouchableOpacity
+
+              >
+                <View style={styles.controlBtn} />
               </TouchableOpacity>
             </View>
+            <View style={styles.controllerRow}>
+              <TouchableOpacity
 
-          </SafeAreaView >
-      }
+              >
+                <View style={styles.controlBtn} />
+              </TouchableOpacity>
+            </View>
+          </View>
 
+          <View style={styles.alterContainer}>
+            <TouchableOpacity
+              onPress={() => pressedA()}
+            >
+              <View style={styles.aBtn} />
+            </TouchableOpacity>
+          </View>
 
-
+        </SafeAreaView >
     }
+
+
+
+  }
 
   return (screenChoice);
 
@@ -580,43 +576,32 @@ export default function App() {
   function pressedA() {
     if (!menuOptionOne) {
       pressedPurple()
-      goToLeaderboard()
+      if (viewmode == 1) {
+        setVMode(3)
+      }
+      else {
+        setVMode(1)
+      }
     }
     else {
       loadedGame()
-      switchMode()
+      startGame()
     }
   }
 
-  function switchMode() {
-    if (viewmode) // in grid mode
-    {
-      setVMode(false);
-      songShouldBePlaying = true;
-      setIsStopwatchStart(false);
-      setResetStopwatch(true);
-    }
-    else // in Preview mode
-    {
-      setVMode(true);
-      songShouldBePlaying = true;
-      setIsStopwatchStart(true);
-      setIsGameRunning(true);
-      startTime = new Date().getTime()
-      console.log(startTime)
-      console.log(startTime)
-      console.log(startTime)
-      console.log(startTime)
-      console.log(startTime)
-    }
+  function startGame() {
+    setVMode(2);                   // setVMode(2);
+    songShouldBePlaying = true;
+    setIsStopwatchStart(true);
+    setIsGameRunning(true);
+    startTime = new Date().getTime()
   }
 
-  function goToLeaderboard() {
-    if (viewLeaderboard) {
-      setLBoard(false);
-    } else {
-      setLBoard(true);
-    }
+  function backToMenu() {
+    setVMode(1);                  // setVMode(1);
+    returnedFromGame = true;
+    songShouldBePlaying = true;
+    setIsStopwatchStart(false);
   }
 }
 
