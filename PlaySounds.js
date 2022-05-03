@@ -42,6 +42,13 @@ async function doorUnlocked() {
     await sound.playAsync();
 }
 
+async function grassyStep() {
+    const { sound } = await Audio.Sound.createAsync(
+        require('./sounds/SH1GrassyStep.mp3')
+    );
+    await sound.playAsync();
+}
+
 export default function PlaySound(songToPlay) {
     switch (songToPlay) {
         case 'loadedGame':
@@ -61,6 +68,9 @@ export default function PlaySound(songToPlay) {
             break;
         case 'doorUnlocked':
             doorUnlocked();
+            break;
+        case 'grassyStep':
+            grassyStep();
             break;
     }
 }
