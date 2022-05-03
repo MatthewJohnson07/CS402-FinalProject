@@ -13,6 +13,7 @@ import { loadList, saveList } from './components/RemoteAccess.js'
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import { Audio } from 'expo-av';  // For music
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
+import PlaySound from './PlaySounds';
 
 const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
 
@@ -82,6 +83,10 @@ var DATA = [
   },
 ];
 
+
+
+//export { loadedGame };
+
 export default function App() {
 
   var emptydata = [];
@@ -115,9 +120,9 @@ export default function App() {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
-  // The following code will play Dearly Beloved
+  // The following code will play music
   const [sound, setSound] = useState();
-  async function playSound() {
+  async function playMenuSong() {
 
     const { sound } = await Audio.Sound.createAsync(
       require('./music/KH1DearlyBeloved.mp3')
@@ -126,7 +131,7 @@ export default function App() {
     await sound.playAsync();
   }
 
-  async function playGameSound() {
+  async function playGameSong() {
 
     const { sound } = await Audio.Sound.createAsync(
       require('./music/YUGIOHtDotREngland.mp3')
@@ -135,39 +140,18 @@ export default function App() {
     await sound.playAsync();
   }
 
-  async function movedCursor() {
-    const { sound } = await Audio.Sound.createAsync(
-      require('./sounds/KH1CursorMoveOriginal.mp3')
-    );
-    await sound.playAsync();
-  }
-
-  async function pressedPurple() {
-    const { sound } = await Audio.Sound.createAsync(
-      require('./sounds/KH1Select.mp3')
-    );
-    await sound.playAsync();
-  }
-
-  async function loadedGame() {
-    const { sound } = await Audio.Sound.createAsync(
-      require('./sounds/KH1LoadGame.mp3')
-    );
-    await sound.playAsync();
-  }
-
   useEffect(() => {
     if (songShouldBePlaying) {
       if (viewmode == 2) {
         sound.unloadAsync();
-        playGameSound()
+        playGameSong()
       }
       else {
         if (returnedFromGame) {
           sound.unloadAsync()
           returnedFromGame = false
         }
-        playSound();
+        playMenuSong();
       }
       songShouldBePlaying = false;
     }
@@ -328,6 +312,7 @@ export default function App() {
             ],
             size: Constants.CELL_SIZE,
             locked: 1,
+            opened: 0,
             renderer: <Door />,
           },
           dialogue: {
@@ -564,7 +549,7 @@ export default function App() {
   return (screenChoice);
 
   function toggleMode() {
-    movedCursor()
+    PlaySound('movedCursor')
     if (menuOptionOne) {
       setMenuOption(false)
     }
@@ -575,7 +560,7 @@ export default function App() {
 
   function pressedA() {
     if (!menuOptionOne) {
-      pressedPurple()
+      PlaySound('pressedPurple')
       if (viewmode == 1) {
         setVMode(3)
       }
@@ -584,7 +569,8 @@ export default function App() {
       }
     }
     else {
-      loadedGame()
+      //loadedGame()
+      PlaySound('loadedGame')
       startGame()
     }
   }
