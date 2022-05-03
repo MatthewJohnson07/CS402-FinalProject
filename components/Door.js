@@ -2,8 +2,8 @@ import React from "react";
 import { Image } from "react-native";
 const lockedDoor = require('../assets/lockedDoor.png');
 const openedDoor = require('../assets/openedDoor.png');
-export default function Door({ position, size, locked }) {
-  if (locked == 1) {
+export default function Door({ position, size, locked, opened }) {
+  if (opened == 0) {
     return (
       <Image
         style={{
