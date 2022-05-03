@@ -2,6 +2,7 @@ import Constants from "./Constants";
 import Alert from "react-native";
 import PlaySound from "../PlaySounds";
 var messageProgression = 0;
+var stuckInDialogue = false;
 export default function (entities, { events, dispatch }) {
   const head = entities.head;
   const key = entities.key;
@@ -13,7 +14,7 @@ export default function (entities, { events, dispatch }) {
     events.forEach((e) => {
       switch (e) {
         case "move-up":
-          if (messageProgression) break;
+          if (stuckInDialogue) break;
           if (head.orientation == 3) {
             head.yPos = -1;
             head.xPos = 0;
@@ -24,7 +25,7 @@ export default function (entities, { events, dispatch }) {
           }
           return;
         case "move-right":
-          if (messageProgression) break;
+          if (stuckInDialogue) break;
           if (head.orientation == 4) {
             head.xPos = 1;
             head.yPos = 0;
@@ -35,7 +36,7 @@ export default function (entities, { events, dispatch }) {
           }
           return;
         case "move-down":
-          if (messageProgression) break;
+          if (stuckInDialogue) break;
           if (head.orientation == 1) {
             head.yPos = 1;
             head.xPos = 0;
@@ -46,7 +47,7 @@ export default function (entities, { events, dispatch }) {
           }
           return;
         case "move-left":
-          if (messageProgression) break;
+          if (stuckInDialogue) break;
           if (head.orientation == 2) {
             head.xPos = -1;
             head.yPos = 0;
@@ -58,22 +59,43 @@ export default function (entities, { events, dispatch }) {
           return;
         case "a":
           if ((head.position[0] - 1 == key.position[0] || head.position[0] + 1 == key.position[0]) && head.position[1] == key.position[1]) {
+            stuckInDialogue = true;
             messageProgression++
-            if (messageProgression > 5) {//} || messageProgression == 0) {
+            if (messageProgression == 5) {
               PlaySound('loadedGame')
-              messageProgression = 0
+              key.keyTaken = 1
+            }
+            if (messageProgression == 6 && !head.keyGrabbed) {
+              messageProgression = 5
+              head.keyGrabbed = true;
               dialogue.display = 0
+              stuckInDialogue = false;
+            }
+            else if (messageProgression == 6 && !door.locked) {
+              messageProgression = 9
+              dialogue.display = 1
+              dialogue.dialogueNumber = messageProgression
+            }
+            else if (messageProgression == 9 && door.locked) {
+              messageProgression = 5
+              dialogue.display = 0
+              stuckInDialogue = false;
+            }
+            else if (messageProgression == 12) {
+              messageProgression = 8
+              dialogue.display = 0
+              stuckInDialogue = false;
             }
             else {
               dialogue.display = 1
               dialogue.dialogueNumber = messageProgression
-              dialogue.position[0] = 0
             }
-            key.keyTaken = 1
-            key.orientation = 1
-            head.keyGrabbed = true;
-            dialoguePrompt.position[0] = -1;
-            dialoguePrompt.position[1] = -1;
+            if (head.position[0] < key.position[0]) {
+              key.orientation = 0
+            }
+            else {
+              key.orientation = 1
+            }
           }
           if (head.position[0] == door.position[0] - 1 && head.position[1] == door.position[1] + 1 && head.orientation == 3 && head.keyGrabbed && door.locked == 1) {
             door.locked = 0;
@@ -101,7 +123,7 @@ export default function (entities, { events, dispatch }) {
         head.position[1] + head.yPos == door.position[1]) ||
       (head.position[0] + head.xPos == door.position[0] - 1 &&
         head.position[1] + head.yPos == door.position[1] &&
-        door.locked == 1) ||
+        door.opened == 0) ||
       (head.position[0] + head.xPos == door.position[0] - 2 &&
         head.position[1] + head.yPos == door.position[1]) ||
       (head.position[0] + head.xPos == key.position[0] &&
