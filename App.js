@@ -412,11 +412,8 @@ export default function App() {
             <Text style={styles.gameNameText}>
               GENERIC TOP-DOWN RPG STYLE GAME
             </Text>
-            <Text style={styles.mainAuthorJoke}>
-              BY ROSS RIPPEE
-            </Text>
-            <Text style={styles.friendshipIsMagic}>
-              and Matthew, Lukas and Javi
+            <Text style={styles.allFriends}>
+              By Ross, Matthew, Lukas and Javi
             </Text>
             <View style={styles.startButtonView}>
               <Text style={styles.selectedText}>
@@ -481,11 +478,8 @@ export default function App() {
             <Text style={styles.gameNameText}>
               GENERIC TOP-DOWN RPG STYLE GAME
             </Text>
-            <Text style={styles.mainAuthorJoke}>
-              BY ROSS RIPPEE
-            </Text>
-            <Text style={styles.friendshipIsMagic}>
-              and Matthew, Lukas and Javi
+            <Text style={styles.allFriends}>
+              By Ross, Matthew, Lukas and Javi
             </Text>
             <View style={styles.startButtonView}>
               <Text style={styles.nonselectedText}>
@@ -654,14 +648,9 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
-  mainAuthorJoke: {
+  allFriends: {
     fontStyle: 'italic',
-    fontSize: 24,
-    color: 'white',
-    textAlign: 'center',
-  },
-  friendshipIsMagic: {
-    fontSize: 16,
+    fontSize: 22,
     color: 'white',
     textAlign: 'center',
   },
