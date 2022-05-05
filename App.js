@@ -317,7 +317,7 @@ export default function App() {
           },
           dialogue: {
             position: [
-              -10000,
+              0,
               BoardSize / 2
             ],
             display: 0,
