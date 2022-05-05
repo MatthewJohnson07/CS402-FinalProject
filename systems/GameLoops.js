@@ -149,6 +149,7 @@ export default function (entities, { events, dispatch }) {
         head.position = [
           -100, -100
         ];
+        messageProgression = 0;
         dispatch("game-over");
       }
       else {
