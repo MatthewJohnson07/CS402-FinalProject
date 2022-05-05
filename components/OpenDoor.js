@@ -1,3 +1,6 @@
+/*
+    THIS FILE IS NO LONGER IN USE
+*/
 import React from "react";
 import { View } from "react-native";
 export default function Door({ position, size }) {
